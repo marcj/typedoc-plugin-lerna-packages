@@ -72,7 +72,6 @@ export class LernaPackagesPlugin extends ConverterComponent {
 
         context.project.children.length = 0;
         for (const i in this.lernaPackages) {
-
             const fullPath = join(cwd, this.lernaPackages[i]);
             const reflection = new DeclarationReflection(i, ReflectionKind.Module, context.project);
             lernaPackageModules[i] = reflection;
@@ -83,9 +82,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
                 fileName: fullPath,
                 line: 0,
             }];
-            context.registerReflection(reflection);
             reflection.children = [];
-            context.project.children.push(reflection);
 
             const readMePath = join(fullPath, 'README.md');
 
@@ -93,6 +90,15 @@ export class LernaPackagesPlugin extends ConverterComponent {
                 let readme = fs.readFileSync(readMePath);
                 reflection.comment = new Comment("", readme.toString());
             }
+        }
+
+        const readMePath = join('README.md');
+
+        if (fs.existsSync(readMePath)) {
+            let readme = fs.readFileSync(readMePath);
+            context.project.readme = readme.toString();
+        } else {
+            context.project.readme = '';
         }
 
         for (const child of copyChildren) {
@@ -113,6 +119,13 @@ export class LernaPackagesPlugin extends ConverterComponent {
             } else {
                 lernaPackageModules[lernaPackageName].children.push(child);
                 child.parent = lernaPackageModules[lernaPackageName];
+            }
+        }
+
+        for (const i in lernaPackageModules) {
+            if (lernaPackageModules[i].children && lernaPackageModules[i].children.length > 0) {
+                context.project.children.push(lernaPackageModules[i]);
+                context.registerReflection(lernaPackageModules[i]);
             }
         }
     }
