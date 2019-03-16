@@ -7,5 +7,3 @@ module.exports = function (PluginHost) {
 
     app.converter.addComponent('lerna-packages', plugin.LernaPackagesPlugin);
 };
-
-=
