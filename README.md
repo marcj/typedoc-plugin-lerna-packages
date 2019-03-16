@@ -13,9 +13,9 @@ Example source code: https://github.com/marcj/estdlib.ts
 Just install it and type `typedoc`:
 
 ```
-npm i typedoc-plugin-lerna-packages
+npm i -D typedoc-plugin-lerna-packages typedoc@^0.14.2
 
-typedoc
+./node_modules/.bin/typedoc
 ```
 
 
