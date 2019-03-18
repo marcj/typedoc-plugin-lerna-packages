@@ -6,11 +6,21 @@ import {Component, ConverterComponent} from "typedoc/dist/lib/converter/componen
 import {Converter} from "typedoc/dist/lib/converter/converter";
 import {Context} from "typedoc/dist/lib/converter/context";
 import {Comment} from "typedoc/dist/lib/models/comments";
+import {Option} from "typedoc/dist/lib/utils/component";
 import * as glob from 'glob';
 import {DeclarationReflection} from "typedoc";
+import {ParameterType} from "typedoc/dist/lib/utils/options/declaration";
 
 @Component({name: 'lerna-packages'})
 export class LernaPackagesPlugin extends ConverterComponent {
+    @Option({
+        name: 'lernaExclude',
+        help: 'List of package names that should be excluded.',
+        type: ParameterType.Array,
+        defaultValue: []
+    })
+    exclude!: string[];
+
     private lernaPackages: { [name: string]: string } = {};
 
     constructor(owner: Converter) {
@@ -43,7 +53,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
      * @param context  The context object describing the current state the converter is in.
      */
     private onBeginResolve(context: Context) {
-        console.log('Lerne packages found', this.lernaPackages);
+        console.log('Lerna packages found', this.lernaPackages);
         const lernaPackageModules: { [lernaPackageName: string]: DeclarationReflection } = {};
 
         const copyChildren = context.project.children.slice(0);
@@ -72,6 +82,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
 
         context.project.children.length = 0;
         for (const i in this.lernaPackages) {
+
             const fullPath = join(cwd, this.lernaPackages[i]);
             const reflection = new DeclarationReflection(i, ReflectionKind.Module, context.project);
             lernaPackageModules[i] = reflection;
@@ -103,6 +114,8 @@ export class LernaPackagesPlugin extends ConverterComponent {
 
         for (const child of copyChildren) {
             const lernaPackageName = findLernaPackageForChildOriginalName(child.originalName);
+
+
             if (!lernaPackageModules[lernaPackageName]) {
                 throw new Error(`lerna package module for ${lernaPackageName} not found.`);
             }
@@ -123,6 +136,10 @@ export class LernaPackagesPlugin extends ConverterComponent {
         }
 
         for (const i in lernaPackageModules) {
+            if (-1 !== this.exclude.indexOf(i)) {
+                continue;
+            }
+
             if (lernaPackageModules[i].children && lernaPackageModules[i].children.length > 0) {
                 context.project.children.push(lernaPackageModules[i]);
                 context.registerReflection(lernaPackageModules[i]);

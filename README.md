@@ -34,3 +34,26 @@ module.exports = {
     skipInternal: true
 };
 ```
+
+## Options
+
+In `typedoc.js` you can add following extra config values to change the behavior of this plugin.
+
+```
+module.exports = {
+    //...
+    
+    //exclude packages from being generated
+    lernaExclude: ['@vendor/integration-tests', '@vendor/examples'],
+};
+
+```
+
+### Development
+
+When you work on this package you should link to it in a other lerna repo,
+and then execute following command to make generation working:
+
+```
+rm -rf docs && NODE_PRESERVE_SYMLINKS=1 ./node_modules/.bin/typedoc
+```
