@@ -1,15 +1,15 @@
-import {join} from "path";
 import * as fs from "fs";
-
-import {ReflectionKind, ReflectionFlag} from "typedoc/dist/lib/models/reflections/abstract";
-import {Component, ConverterComponent} from "typedoc/dist/lib/converter/components";
-import {Converter} from "typedoc/dist/lib/converter/converter";
-import {Context} from "typedoc/dist/lib/converter/context";
-import {Comment} from "typedoc/dist/lib/models/comments";
-import {Option} from "typedoc/dist/lib/utils/component";
 import * as glob from 'glob';
-import {DeclarationReflection} from "typedoc";
-import {ParameterType} from "typedoc/dist/lib/utils/options/declaration";
+import { join } from "path";
+import { DeclarationReflection } from "typedoc";
+import { Component, ConverterComponent } from "typedoc/dist/lib/converter/components";
+import { Context } from "typedoc/dist/lib/converter/context";
+import { Converter } from "typedoc/dist/lib/converter/converter";
+import { Comment } from "typedoc/dist/lib/models/comments";
+import { ReflectionFlag, ReflectionKind } from "typedoc/dist/lib/models/reflections/abstract";
+import { Option } from "typedoc/dist/lib/utils/component";
+import { ParameterType } from "typedoc/dist/lib/utils/options/declaration";
+
 
 @Component({name: 'lerna-packages'})
 export class LernaPackagesPlugin extends ConverterComponent {
@@ -101,15 +101,6 @@ export class LernaPackagesPlugin extends ConverterComponent {
                 let readme = fs.readFileSync(readMePath);
                 reflection.comment = new Comment("", readme.toString());
             }
-        }
-
-        const readMePath = join('README.md');
-
-        if (fs.existsSync(readMePath)) {
-            let readme = fs.readFileSync(readMePath);
-            context.project.readme = readme.toString();
-        } else {
-            context.project.readme = '';
         }
 
         for (const child of copyChildren) {
