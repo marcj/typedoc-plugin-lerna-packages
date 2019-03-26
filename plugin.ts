@@ -27,11 +27,19 @@ export class LernaPackagesPlugin extends ConverterComponent {
         super(owner);
 
         const lernaConfig = JSON.parse(fs.readFileSync('lerna.json', 'utf8'));
-        if (!lernaConfig.packages) {
+        let packages: string[] = [];
+        if (lernaConfig.packages) {
+            packages = lernaConfig.packages;
+        } else if (lernaConfig.useWorkspaces) {
+            const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            packages = packageJson.workspaces;
+        }
+
+        if (!packages || packages.length === 0) {
             throw new Error('No lerna.json found or packages defined.');
         }
 
-        for (const packageGlob of lernaConfig['packages']) {
+        for (const packageGlob of packages) {
             const thisPkgs = glob.sync(packageGlob, {
                 ignore: ['node_modules']
             });
@@ -138,4 +146,3 @@ export class LernaPackagesPlugin extends ConverterComponent {
         }
     }
 }
-
