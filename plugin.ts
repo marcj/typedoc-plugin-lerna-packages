@@ -73,8 +73,8 @@ export class LernaPackagesPlugin extends ConverterComponent {
             for (const i in this.lernaPackages) {
                 if (!this.lernaPackages.hasOwnProperty(i)) continue;
 
-                const packagePath = normalize(join(cwd, this.lernaPackages[i]) + '/');
-                if (-1 !== normalize(path + '/').indexOf(packagePath)) {
+                const packagePath = join(cwd, this.lernaPackages[i]) + '/';
+                if (-1 !== normalize(path + '/').indexOf(normalize(packagePath))) {
                     if (i.length > fit.length) {
                         fit = i;
                     }
