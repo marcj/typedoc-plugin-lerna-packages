@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as glob from 'glob';
-import { join } from "path";
+import { join, normalize } from "path";
 import { DeclarationReflection } from "typedoc";
 import { Component, ConverterComponent } from "typedoc/dist/lib/converter/components";
 import { Context } from "typedoc/dist/lib/converter/context";
@@ -73,8 +73,8 @@ export class LernaPackagesPlugin extends ConverterComponent {
             for (const i in this.lernaPackages) {
                 if (!this.lernaPackages.hasOwnProperty(i)) continue;
 
-                const packagePath = join(cwd, this.lernaPackages[i]) + '/';
-                if (-1 !== (path + '/').indexOf(packagePath)) {
+                const packagePath = normalize(join(cwd, this.lernaPackages[i]) + '/');
+                if (-1 !== normalize(path + '/').indexOf(packagePath)) {
                     if (i.length > fit.length) {
                         fit = i;
                     }
