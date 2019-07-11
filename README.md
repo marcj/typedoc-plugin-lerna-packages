@@ -6,9 +6,9 @@ isn't correct for lerna packages, as each package should be treated as
 a module. This plugins handles that. Also if you have a README.md in your
 package folder, it will be used as comment for that module.
 
-Example Demo: https://estdlib.dev/
+Example Demo: https://marshal.marcj.dev/
 
-Example source code: https://github.com/marcj/estdlib.ts
+Example source code: https://github.com/marcj/marshal.ts
 
 Just install it and type `typedoc`:
 
