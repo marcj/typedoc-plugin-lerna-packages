@@ -60,8 +60,8 @@ let LernaPackagesPlugin = class LernaPackagesPlugin extends components_1.Convert
             for (const i in this.lernaPackages) {
                 if (!this.lernaPackages.hasOwnProperty(i))
                     continue;
-                const packagePath = path_1.join(cwd, this.lernaPackages[i]) + '/';
-                if (-1 !== (path + '/').indexOf(packagePath)) {
+                const packagePath = path_1.normalize(path_1.join(cwd, this.lernaPackages[i]) + '/');
+                if (-1 !== path_1.normalize(path + '/').indexOf(packagePath)) {
                     if (i.length > fit.length) {
                         fit = i;
                     }
