@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "prepublish": "tsc"
+    "prepare": "tsc",
+    "prepublishOnly": "tsc"
   },
   "keywords": [
     "typedocplugin",
@@ -18,11 +19,12 @@
   "author": "Marc J. Schmidt <marc@marcjschmidt.de>",
   "license": "MIT",
   "peerDependencies": {
-    "typedoc": "^0.14.2"
+    "typedoc": "^0.15.0"
   },
   "devDependencies": {
     "@types/handlebars": "^4.1.0",
-    "typedoc": "^0.14.2",
+    "@types/node": "^12.7.4",
+    "typedoc": "^0.15.0",
     "typescript": "^3.5.3"
   }
 }

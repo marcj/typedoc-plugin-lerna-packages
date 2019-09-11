@@ -10,18 +10,15 @@
     "outDir": "./",
     "experimentalDecorators": true,
     "lib": [
-      "dom",
       "es5",
       "es2015.core",
       "es2015.collection",
       "es2015.iterable",
       "es2016.array.include" // Supported by Node 6+
-    ]
+    ],
+    "typeRoots": ["node_modules/@types"]
   },
   "files": [
     "plugin.ts"
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }
