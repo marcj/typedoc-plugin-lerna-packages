@@ -13,7 +13,7 @@ Example source code: https://github.com/marcj/marshal.ts
 Just install it and type `typedoc`:
 
 ```
-npm i -D typedoc-plugin-lerna-packages typedoc@^0.14.2
+npm i -D typedoc-plugin-lerna-packages typedoc@^0.15
 
 ./node_modules/.bin/typedoc
 ```
