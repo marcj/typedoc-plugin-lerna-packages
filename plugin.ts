@@ -19,7 +19,15 @@ export class LernaPackagesPlugin extends ConverterComponent {
         type: ParameterType.Array,
         defaultValue: []
     })
-    exclude!: string[];
+    lernaExclude!: string[];
+
+    @Option({
+      name: 'pathExclude',
+      help: 'List of paths to entirely ignore',
+      type: ParameterType.Array,
+      defaultValue: []
+    })
+    pathExclude!: string[];
 
     private lernaPackages: { [name: string]: string } = {};
 
@@ -112,8 +120,8 @@ export class LernaPackagesPlugin extends ConverterComponent {
         }
 
         for (const child of copyChildren) {
+            if(this.pathExclude.some(pkg => child.originalName.includes(pkg))) continue;
             const lernaPackageName = findLernaPackageForChildOriginalName(child.originalName);
-
 
             if (!lernaPackageModules[lernaPackageName]) {
                 throw new Error(`lerna package module for ${lernaPackageName} not found.`);
@@ -135,7 +143,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
         }
 
         for (const i in lernaPackageModules) {
-            if (-1 !== this.exclude.indexOf(i)) {
+            if (-1 !== this.lernaExclude.indexOf(i)) {
                 continue;
             }
 
