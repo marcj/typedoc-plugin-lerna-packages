@@ -47,27 +47,14 @@ export class LernaPackagesPlugin extends ConverterComponent {
             throw new Error('No lerna.json found or packages defined.');
         }
 
-        for (let packageGlob of packages) {
-            if(packageGlob.endsWith('**')){
-                //only search for directories
-                packageGlob = packageGlob + '/';
-            }
+        for (const packageGlob of packages) {
             const thisPkgs = glob.sync(packageGlob, {
-                ignore: ['**/node_modules/**']
+                ignore: ['node_modules']
             });
 
             for (const pkg of thisPkgs) {
-                try{
-                    const pkgConfig = JSON.parse(fs.readFileSync(join(pkg, 'package.json'), 'utf8'));
-                    this.lernaPackages[pkgConfig['name']] = pkg;
-                }
-                catch(err){
-                    if(err.code === 'ENOENT' && packageGlob.endsWith('**/')){
-                        console.warn(`Direcotry "${pkg}" had no package.json but package glob ends with ** so ignoring`);
-                        continue;
-                    }
-                    throw err;
-                }
+                const pkgConfig = JSON.parse(fs.readFileSync(join(pkg, 'package.json'), 'utf8'));
+                this.lernaPackages[pkgConfig['name']] = pkg;
             }
         }
 
