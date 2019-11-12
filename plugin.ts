@@ -130,7 +130,12 @@ export class LernaPackagesPlugin extends ConverterComponent {
             // console.log('lernaPackageModules[lernaPackageName]', lernaPackageModules[lernaPackageName]);
             if (child.kindOf(ReflectionKind.ExternalModule) || child.kindOf(ReflectionKind.Module)) {
                 console.log(`put ${child.name} stuff into ${lernaPackageName}`);
-                const projectFileEntry = Object.entries(context.project.reflections).find(([key,value]) => value.name === child.name ? key : null);
+                /* This will search through the project level reflections collection to find an entry with the 
+                 * same name as the child we are currently working with so that it can be removed. 
+                 * This prevents it from appearing on the main index page but is still visible within the module
+                */
+                const projectFileEntry = Object.entries(context.project.reflections)
+                    .find(([key,value]) => value.name === child.name ? key : null);
                 delete context.project.reflections[projectFileEntry[0]];
                 if (child.children) {
                     for (const cc of child.children) {
