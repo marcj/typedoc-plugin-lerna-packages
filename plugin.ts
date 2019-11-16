@@ -40,7 +40,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
             packages = lernaConfig.packages;
         } else if (lernaConfig.useWorkspaces) {
             const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
-            packages = packageJson.workspaces;
+            packages = packageJson.workspaces.packages || packageJson.workspaces;
         }
 
         if (!packages || packages.length === 0) {
