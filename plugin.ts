@@ -53,8 +53,10 @@ export class LernaPackagesPlugin extends ConverterComponent {
             });
 
             for (const pkg of thisPkgs) {
-                const pkgConfig = JSON.parse(fs.readFileSync(join(pkg, 'package.json'), 'utf8'));
-                this.lernaPackages[pkgConfig['name']] = pkg;
+                if(fs.existsSync(join(pkg, 'package.json'))) {
+                    const pkgConfig = JSON.parse(fs.readFileSync(join(pkg, 'package.json'), 'utf8'));
+                    this.lernaPackages[pkgConfig['name']] = pkg;
+                }
             }
         }
 
