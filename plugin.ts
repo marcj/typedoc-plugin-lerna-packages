@@ -147,7 +147,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
                 continue;
             }
 
-            if (lernaPackageModules[i].children && lernaPackageModules[i].children.length > 0) {
+            if (lernaPackageModules[i].hasComment() || lernaPackageModules[i].children && lernaPackageModules[i].children.length > 0) {
                 context.project.children.push(lernaPackageModules[i]);
                 context.registerReflection(lernaPackageModules[i]);
             }
