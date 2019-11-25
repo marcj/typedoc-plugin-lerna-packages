@@ -1,14 +1,14 @@
 import * as fs from "fs";
 import * as glob from 'glob';
-import { join, normalize } from "path";
-import { DeclarationReflection } from "typedoc";
-import { Component, ConverterComponent } from "typedoc/dist/lib/converter/components";
-import { Context } from "typedoc/dist/lib/converter/context";
-import { Converter } from "typedoc/dist/lib/converter/converter";
-import { Comment } from "typedoc/dist/lib/models/comments";
-import { ReflectionFlag, ReflectionKind } from "typedoc/dist/lib/models/reflections/abstract";
-import { Option } from "typedoc/dist/lib/utils/component";
-import { ParameterType } from "typedoc/dist/lib/utils/options/declaration";
+import {join, normalize} from "path";
+import {DeclarationReflection} from "typedoc";
+import {Component, ConverterComponent} from "typedoc/dist/lib/converter/components";
+import {Context} from "typedoc/dist/lib/converter/context";
+import {Converter} from "typedoc/dist/lib/converter/converter";
+import {Comment} from "typedoc/dist/lib/models/comments";
+import {ReflectionFlag, ReflectionKind} from "typedoc/dist/lib/models/reflections/abstract";
+import {Option} from "typedoc/dist/lib/utils/component";
+import {ParameterType} from "typedoc/dist/lib/utils/options/declaration";
 
 
 @Component({name: 'lerna-packages'})
@@ -22,10 +22,10 @@ export class LernaPackagesPlugin extends ConverterComponent {
     lernaExclude!: string[];
 
     @Option({
-      name: 'pathExclude',
-      help: 'List of paths to entirely ignore',
-      type: ParameterType.Array,
-      defaultValue: []
+        name: 'pathExclude',
+        help: 'List of paths to entirely ignore',
+        type: ParameterType.Array,
+        defaultValue: []
     })
     pathExclude!: string[];
 
@@ -53,7 +53,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
             });
 
             for (const pkg of thisPkgs) {
-                if(fs.existsSync(join(pkg, 'package.json'))) {
+                if (fs.existsSync(join(pkg, 'package.json'))) {
                     const pkgConfig = JSON.parse(fs.readFileSync(join(pkg, 'package.json'), 'utf8'));
                     this.lernaPackages[pkgConfig['name']] = pkg;
                 }
@@ -122,7 +122,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
         }
 
         for (const child of copyChildren) {
-            if(this.pathExclude.some(pkg => child.originalName.includes(pkg))) continue;
+            if (this.pathExclude.some(pkg => child.originalName.includes(pkg))) continue;
             const lernaPackageName = findLernaPackageForChildOriginalName(child.originalName);
 
             if (!lernaPackageModules[lernaPackageName]) {
@@ -132,13 +132,17 @@ export class LernaPackagesPlugin extends ConverterComponent {
             // console.log('lernaPackageModules[lernaPackageName]', lernaPackageModules[lernaPackageName]);
             if (child.kindOf(ReflectionKind.ExternalModule) || child.kindOf(ReflectionKind.Module)) {
                 console.log(`put ${child.name} stuff into ${lernaPackageName}`);
-                /* This will search through the project level reflections collection to find an entry with the 
-                 * same name as the child we are currently working with so that it can be removed. 
-                 * This prevents it from appearing on the main index page but is still visible within the module
-                */
+
+                //This will search through the project level reflections collection to find an entry with the
+                //same name as the child we are currently working with so that it can be removed.
+                //This prevents it from appearing on the main index page but is still visible within the module.
                 const projectFileEntry = Object.entries(context.project.reflections)
-                    .find(([key,value]) => value.name === child.name ? key : null);
-                delete context.project.reflections[projectFileEntry[0]];
+                    .find(([key, value]) => value.name === child.name);
+
+                if (projectFileEntry) {
+                    delete context.project.reflections[projectFileEntry[0]];
+                }
+
                 if (child.children) {
                     for (const cc of child.children) {
                         lernaPackageModules[lernaPackageName].children.push(cc);
