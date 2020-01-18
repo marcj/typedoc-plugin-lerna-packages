@@ -1,4 +1,4 @@
-import { LernaPackagesPlugin } from './plugin'
+import { LernaPackagesPlugin } from './plugin';
 import { PluginHost } from 'typedoc/dist/lib/utils';
 import { ParameterType } from 'typedoc';
 

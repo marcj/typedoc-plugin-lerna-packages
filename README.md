@@ -12,26 +12,24 @@ Example source code: https://github.com/marcj/marshal.ts
 
 Just install it and type `typedoc`:
 
-```
-npm i -D typedoc-plugin-lerna-packages typedoc@^0.15
+```bash
+npm i -D typedoc-plugin-lerna-packages typedoc@~0.16
+# yarn add -D typedoc-plugin-lerna-packages typedoc@0.16 --tilde
 
-./node_modules/.bin/typedoc
+npx typedoc
+# yarn typedoc
 ```
-
 
 Example `typedoc.js` in your root folder
 
-```
+```js
 module.exports = {
-    "mode": "modules",
-    "out": "docs",
-    exclude: [
-        '**/node_modules/**',
-        '**/*.spec.ts',
-    ],
-    name: 'MY NAME',
-    excludePrivate: true,
-    skipInternal: true
+  mode: 'modules',
+  out: 'docs',
+  exclude: ['**/node_modules/**', '**/*.spec.ts'],
+  name: 'MY NAME',
+  excludePrivate: true,
+  skipInternal: true
 };
 ```
 
@@ -39,14 +37,13 @@ module.exports = {
 
 In `typedoc.js` you can add following extra config values to change the behavior of this plugin.
 
-```
+```js
 module.exports = {
-    //...
-    
-    //exclude packages from being generated
-    lernaExclude: ['@vendor/integration-tests', '@vendor/examples'],
-};
+  //...
 
+  //exclude packages from being generated
+  lernaExclude: ['@vendor/integration-tests', '@vendor/examples']
+};
 ```
 
 ### Development

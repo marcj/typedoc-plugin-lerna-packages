@@ -2,15 +2,15 @@
   "name": "typedoc-plugin-lerna-packages",
   "version": "0.2.1",
   "description": "Display Typescript documentation for Lerna monorepo with the correct module exports.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "prepare": "tsc",
-    "prepublishOnly": "tsc"
+    "prepare": "tsc"
   },
   "keywords": [
     "typedocplugin",
-    "typedoc"
+    "typedoc",
+    "lerna"
   ],
   "repository": {
     "type": "git",
@@ -19,11 +19,15 @@
   "author": "Marc J. Schmidt <marc@marcjschmidt.de>",
   "license": "MIT",
   "peerDependencies": {
-    "typedoc": "^0.16.4"
+    "typedoc": "^0.16.7"
   },
   "devDependencies": {
-    "@types/node": "^12.7.4",
+    "@types/glob": "^7.1.1",
+    "@types/node": "^13.1.8",
     "typedoc": "^0.16.7",
     "typescript": "^3.7.5"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
