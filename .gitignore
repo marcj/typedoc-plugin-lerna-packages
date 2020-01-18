@@ -1,3 +1,4 @@
 node_modules
 plugin.js
+index.js
 *.js.map

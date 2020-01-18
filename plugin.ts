@@ -1,32 +1,20 @@
 import * as fs from "fs";
 import * as glob from 'glob';
 import { join, normalize } from "path";
-import { DeclarationReflection } from "typedoc";
+import { DeclarationReflection, BindOption } from "typedoc";
 import { Component, ConverterComponent } from "typedoc/dist/lib/converter/components";
 import { Context } from "typedoc/dist/lib/converter/context";
 import { Converter } from "typedoc/dist/lib/converter/converter";
 import { Comment } from "typedoc/dist/lib/models/comments";
 import { ReflectionFlag, ReflectionKind } from "typedoc/dist/lib/models/reflections/abstract";
-import { Option } from "typedoc/dist/lib/utils/component";
-import { ParameterType } from "typedoc/dist/lib/utils/options/declaration";
 
 
 @Component({name: 'lerna-packages'})
 export class LernaPackagesPlugin extends ConverterComponent {
-    @Option({
-        name: 'lernaExclude',
-        help: 'List of package names that should be excluded.',
-        type: ParameterType.Array,
-        defaultValue: []
-    })
+    @BindOption('lernaExclude')
     lernaExclude!: string[];
 
-    @Option({
-      name: 'pathExclude',
-      help: 'List of paths to entirely ignore',
-      type: ParameterType.Array,
-      defaultValue: []
-    })
+    @BindOption('pathExclude')
     pathExclude!: string[];
 
     private lernaPackages: { [name: string]: string } = {};
@@ -83,8 +71,9 @@ export class LernaPackagesPlugin extends ConverterComponent {
             for (const i in this.lernaPackages) {
                 if (!this.lernaPackages.hasOwnProperty(i)) continue;
 
-                const packagePath = normalize(join(cwd, this.lernaPackages[i]) + '/');
-                if (-1 !== normalize(path + '/').indexOf(packagePath)) {
+                // normalize uses backslashes on Windows.
+                const packagePath = normalize(join(cwd, this.lernaPackages[i]) + '/').replace(/\\/g, '/');
+                if (normalize(path + '/').replace(/\\/g, '/').includes(packagePath)) {
                     if (i.length > fit.length) {
                         fit = i;
                     }
@@ -132,13 +121,11 @@ export class LernaPackagesPlugin extends ConverterComponent {
             // console.log('lernaPackageModules[lernaPackageName]', lernaPackageModules[lernaPackageName]);
             if (child.kindOf(ReflectionKind.ExternalModule) || child.kindOf(ReflectionKind.Module)) {
                 console.log(`put ${child.name} stuff into ${lernaPackageName}`);
-                /* This will search through the project level reflections collection to find an entry with the 
-                 * same name as the child we are currently working with so that it can be removed. 
+                /* This will search through the project level reflections collection to find an entry with the
+                 * same name as the child we are currently working with so that it can be removed.
                  * This prevents it from appearing on the main index page but is still visible within the module
-                */
-                const projectFileEntry = Object.entries(context.project.reflections)
-                    .find(([key,value]) => value.name === child.name ? key : null);
-                delete context.project.reflections[projectFileEntry[0]];
+                 */
+                delete context.project.reflections[child.id];
                 if (child.children) {
                     for (const cc of child.children) {
                         lernaPackageModules[lernaPackageName].children.push(cc);
@@ -152,7 +139,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
         }
 
         for (const i in lernaPackageModules) {
-            if (-1 !== this.lernaExclude.indexOf(i)) {
+            if (this.lernaExclude.includes(i)) {
                 continue;
             }
 
