@@ -1,25 +1,17 @@
 {
   "compilerOptions": {
+    "rootDir": "src",
     "moduleResolution": "node",
-    "allowJs": true,
     "module": "commonjs",
-    "target": "es2015",
+    "target": "es6",
     "sourceMap": true,
     "downlevelIteration": true,
     "inlineSources": true,
-    "outDir": "./",
+    "outDir": "./dist",
     "experimentalDecorators": true,
-    "lib": [
-      "es5",
-      "es2015.core",
-      "es2015.collection",
-      "es2015.iterable",
-      "es2016.array.include" // Supported by Node 6+
-    ],
-    "typeRoots": ["node_modules/@types"]
+    "emitDecoratorMetadata": true,
+    "incremental": true,
+    "lib": ["es6"]
   },
-  "files": [
-    "index.ts",
-    "plugin.ts"
-  ]
+  "include": ["src"]
 }

@@ -1,15 +1,14 @@
-import * as fs from "fs";
-import * as glob from 'glob';
-import { join, normalize } from "path";
-import { DeclarationReflection, BindOption } from "typedoc";
-import { Component, ConverterComponent } from "typedoc/dist/lib/converter/components";
-import { Context } from "typedoc/dist/lib/converter/context";
-import { Converter } from "typedoc/dist/lib/converter/converter";
-import { Comment } from "typedoc/dist/lib/models/comments";
-import { ReflectionFlag, ReflectionKind } from "typedoc/dist/lib/models/reflections/abstract";
+import { existsSync, readFileSync } from 'fs';
+import { sync as glob } from 'glob';
+import { join, normalize } from 'path';
+import { BindOption, DeclarationReflection } from 'typedoc';
+import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components';
+import { Context } from 'typedoc/dist/lib/converter/context';
+import { Converter } from 'typedoc/dist/lib/converter/converter';
+import { Comment } from 'typedoc/dist/lib/models/comments';
+import { ReflectionFlag, ReflectionKind } from 'typedoc/dist/lib/models/reflections/abstract';
 
-
-@Component({name: 'lerna-packages'})
+@Component({ name: 'lerna-packages' })
 export class LernaPackagesPlugin extends ConverterComponent {
     @BindOption('lernaExclude')
     lernaExclude!: string[];
@@ -22,12 +21,12 @@ export class LernaPackagesPlugin extends ConverterComponent {
     constructor(owner: Converter) {
         super(owner);
 
-        const lernaConfig = JSON.parse(fs.readFileSync('lerna.json', 'utf8'));
+        const lernaConfig = JSON.parse(readFileSync('lerna.json', 'utf8'));
         let packages: string[] = [];
         if (lernaConfig.packages) {
             packages = lernaConfig.packages;
         } else if (lernaConfig.useWorkspaces) {
-            const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
             packages = packageJson.workspaces.packages || packageJson.workspaces;
         }
 
@@ -36,13 +35,13 @@ export class LernaPackagesPlugin extends ConverterComponent {
         }
 
         for (const packageGlob of packages) {
-            const thisPkgs = glob.sync(packageGlob, {
+            const thisPkgs = glob(packageGlob, {
                 ignore: ['node_modules']
             });
 
             for (const pkg of thisPkgs) {
-                if(fs.existsSync(join(pkg, 'package.json'))) {
-                    const pkgConfig = JSON.parse(fs.readFileSync(join(pkg, 'package.json'), 'utf8'));
+                if (existsSync(join(pkg, 'package.json'))) {
+                    const pkgConfig = JSON.parse(readFileSync(join(pkg, 'package.json'), 'utf8'));
                     this.lernaPackages[pkgConfig['name']] = pkg;
                 }
             }
@@ -89,7 +88,6 @@ export class LernaPackagesPlugin extends ConverterComponent {
 
         context.project.children.length = 0;
         for (const i in this.lernaPackages) {
-
             const fullPath = join(cwd, this.lernaPackages[i]);
             const reflection = new DeclarationReflection(i, ReflectionKind.Module, context.project);
             lernaPackageModules[i] = reflection;
@@ -104,14 +102,14 @@ export class LernaPackagesPlugin extends ConverterComponent {
 
             const readMePath = join(fullPath, 'README.md');
 
-            if (fs.existsSync(readMePath)) {
-                let readme = fs.readFileSync(readMePath);
-                reflection.comment = new Comment("", readme.toString());
+            if (existsSync(readMePath)) {
+                let readme = readFileSync(readMePath);
+                reflection.comment = new Comment('', readme.toString());
             }
         }
 
         for (const child of copyChildren) {
-            if(this.pathExclude.some(pkg => child.originalName.includes(pkg))) continue;
+            if (this.pathExclude.some(pkg => child.originalName.includes(pkg))) continue;
             const lernaPackageName = findLernaPackageForChildOriginalName(child.originalName);
 
             if (!lernaPackageModules[lernaPackageName]) {
