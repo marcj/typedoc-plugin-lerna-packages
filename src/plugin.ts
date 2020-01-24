@@ -1,14 +1,13 @@
-import { existsSync, readFileSync } from 'fs';
-import { sync as glob } from 'glob';
-import { join, normalize } from 'path';
-import { BindOption, DeclarationReflection } from 'typedoc';
-import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components';
-import { Context } from 'typedoc/dist/lib/converter/context';
-import { Converter } from 'typedoc/dist/lib/converter/converter';
-import { Comment } from 'typedoc/dist/lib/models/comments';
-import { ReflectionFlag, ReflectionKind } from 'typedoc/dist/lib/models/reflections/abstract';
+import {existsSync, readFileSync} from 'fs';
+import {sync as glob} from 'glob';
+import {join, normalize} from 'path';
+import {BindOption, ReflectionFlag, ReflectionKind, DeclarationReflection} from 'typedoc';
+import {Component, ConverterComponent} from 'typedoc/dist/lib/converter/components';
+import {Context} from 'typedoc/dist/lib/converter/context';
+import {Converter} from 'typedoc/dist/lib/converter/converter';
+import {Comment} from 'typedoc/dist/lib/models/comments';
 
-@Component({ name: 'lerna-packages' })
+@Component({name: 'lerna-packages'})
 export class LernaPackagesPlugin extends ConverterComponent {
     @BindOption('lernaExclude')
     lernaExclude!: string[];
@@ -87,9 +86,14 @@ export class LernaPackagesPlugin extends ConverterComponent {
         };
 
         context.project.children.length = 0;
+
         for (const i in this.lernaPackages) {
             const fullPath = join(cwd, this.lernaPackages[i]);
             const reflection = new DeclarationReflection(i, ReflectionKind.Module, context.project);
+            if (reflection.id === 0) {
+                throw new Error('We got the wrong reference of Typedoc. Please install correctly and dedupe if necessary.');
+            }
+
             lernaPackageModules[i] = reflection;
             reflection.originalName = fullPath;
             reflection.flags.setFlag(ReflectionFlag.Exported, true);
@@ -123,7 +127,13 @@ export class LernaPackagesPlugin extends ConverterComponent {
                  * same name as the child we are currently working with so that it can be removed.
                  * This prevents it from appearing on the main index page but is still visible within the module
                  */
-                delete context.project.reflections[child.id];
+                const projectFileEntry = Object.entries(context.project.reflections)
+                    .find(([key, value]) => value.name === child.name);
+
+                if (projectFileEntry) {
+                    delete context.project.reflections[projectFileEntry[0]];
+                }
+
                 if (child.children) {
                     for (const cc of child.children) {
                         lernaPackageModules[lernaPackageName].children.push(cc);

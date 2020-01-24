@@ -1,6 +1,6 @@
-import { LernaPackagesPlugin } from './plugin';
-import { PluginHost } from 'typedoc/dist/lib/utils';
-import { ParameterType } from 'typedoc';
+import {LernaPackagesPlugin} from './plugin';
+import {PluginHost} from 'typedoc/dist/lib/utils';
+import {ParameterType} from 'typedoc';
 
 export function load(PluginHost: PluginHost) {
     const app = PluginHost.owner;

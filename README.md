@@ -28,8 +28,7 @@ module.exports = {
   out: 'docs',
   exclude: ['**/node_modules/**', '**/*.spec.ts'],
   name: 'MY NAME',
-  excludePrivate: true,
-  skipInternal: true
+  excludePrivate: true
 };
 ```
 
