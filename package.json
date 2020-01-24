@@ -1,6 +1,6 @@
 {
   "name": "typedoc-plugin-lerna-packages",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Display Typescript documentation for Lerna monorepo with the correct module exports.",
   "main": "dist/index.js",
   "scripts": {
