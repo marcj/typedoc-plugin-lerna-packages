@@ -19,13 +19,13 @@
   "author": "Marc J. Schmidt <marc@marcjschmidt.de>",
   "license": "MIT",
   "peerDependencies": {
-    "typedoc": "^0.16.7"
+    "typedoc": "^0.17.0"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
     "@types/node": "^13.1.8",
-    "typedoc": "^0.16.7",
-    "typescript": "^3.7.5"
+    "typedoc": "^0.17.0",
+    "typescript": "^3.8.3"
   },
   "files": [
     "dist"

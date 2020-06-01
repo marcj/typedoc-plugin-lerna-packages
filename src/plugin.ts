@@ -121,7 +121,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
             }
 
             // console.log('lernaPackageModules[lernaPackageName]', lernaPackageModules[lernaPackageName]);
-            if (child.kindOf(ReflectionKind.ExternalModule) || child.kindOf(ReflectionKind.Module)) {
+            if (child.kindOf(ReflectionKind.Namespace) || child.kindOf(ReflectionKind.Module)) {
                 console.log(`put ${child.name} stuff into ${lernaPackageName}`);
                 /* This will search through the project level reflections collection to find an entry with the
                  * same name as the child we are currently working with so that it can be removed.
