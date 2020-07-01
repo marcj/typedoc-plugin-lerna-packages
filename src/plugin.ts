@@ -9,6 +9,9 @@ import {Comment} from 'typedoc/dist/lib/models/comments';
 
 @Component({name: 'lerna-packages'})
 export class LernaPackagesPlugin extends ConverterComponent {
+    @BindOption('readme')
+    readme!: string;
+
     @BindOption('lernaExclude')
     lernaExclude!: string[];
 
@@ -107,9 +110,9 @@ export class LernaPackagesPlugin extends ConverterComponent {
             }];
             reflection.children = [];
 
-            const readMePath = join(fullPath, 'README.md');
+            const readMePath = join(fullPath, this.readme ?? 'README.md');
 
-            if (existsSync(readMePath)) {
+            if (this.readme !== 'none' && existsSync(readMePath)) {
                 let readme = readFileSync(readMePath);
                 reflection.comment = new Comment('', readme.toString());
             }
