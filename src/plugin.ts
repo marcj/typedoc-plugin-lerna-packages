@@ -60,6 +60,9 @@ export class LernaPackagesPlugin extends ConverterComponent {
         console.log('Lerna packages found', this.lernaPackages);
         const lernaPackageModules: { [lernaPackageName: string]: DeclarationReflection } = {};
 
+        // children could be undefined if there are some TS errors in the files
+        if (!context.project.children) return;
+
         const copyChildren = context.project.children.slice(0);
 
         const cwd = process.cwd();
