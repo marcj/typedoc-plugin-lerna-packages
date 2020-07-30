@@ -9,6 +9,9 @@ import {Comment} from 'typedoc/dist/lib/models/comments';
 
 @Component({name: 'lerna-packages'})
 export class LernaPackagesPlugin extends ConverterComponent {
+    @BindOption('readme')
+    readme!: string;
+
     @BindOption('lernaExclude')
     lernaExclude!: string[];
 
@@ -60,6 +63,9 @@ export class LernaPackagesPlugin extends ConverterComponent {
         console.log('Lerna packages found', this.lernaPackages);
         const lernaPackageModules: { [lernaPackageName: string]: DeclarationReflection } = {};
 
+        // children could be undefined if there are some TS errors in the files
+        if (!context.project.children) return;
+
         const copyChildren = context.project.children.slice(0);
 
         const cwd = process.cwd();
@@ -104,9 +110,9 @@ export class LernaPackagesPlugin extends ConverterComponent {
             }];
             reflection.children = [];
 
-            const readMePath = join(fullPath, 'README.md');
+            const readMePath = join(fullPath, this.readme ?? 'README.md');
 
-            if (existsSync(readMePath)) {
+            if (this.readme !== 'none' && existsSync(readMePath)) {
                 let readme = readFileSync(readMePath);
                 reflection.comment = new Comment('', readme.toString());
             }
@@ -121,7 +127,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
             }
 
             // console.log('lernaPackageModules[lernaPackageName]', lernaPackageModules[lernaPackageName]);
-            if (child.kindOf(ReflectionKind.ExternalModule) || child.kindOf(ReflectionKind.Module)) {
+            if (child.kindOf(ReflectionKind.Namespace) || child.kindOf(ReflectionKind.Module)) {
                 console.log(`put ${child.name} stuff into ${lernaPackageName}`);
                 /* This will search through the project level reflections collection to find an entry with the
                  * same name as the child we are currently working with so that it can be removed.
