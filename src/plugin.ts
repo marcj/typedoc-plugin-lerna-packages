@@ -112,7 +112,7 @@ export class LernaPackagesPlugin extends ConverterComponent {
 
             const readMePath = join(fullPath, this.readme ?? 'README.md');
 
-            if (this.readme !== 'none' && existsSync(readMePath)) {
+            if (this.readme && this.readme !== 'none' && existsSync(readMePath)) {
                 let readme = readFileSync(readMePath);
                 reflection.comment = new Comment('', readme.toString());
             }
