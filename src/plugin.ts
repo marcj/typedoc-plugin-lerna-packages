@@ -23,12 +23,12 @@ export class LernaPackagesPlugin extends ConverterComponent {
     constructor(owner: Converter) {
         super(owner);
 
-        const lernaConfig = JSON.parse(readFileSync('lerna.json', 'utf8'));
+        const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
+        const lernaConfig = packageJson.lerna || JSON.parse(readFileSync('lerna.json', 'utf8'));
         let packages: string[] = [];
         if (lernaConfig.packages) {
             packages = lernaConfig.packages;
         } else if (lernaConfig.useWorkspaces) {
-            const packageJson = JSON.parse(readFileSync('package.json', 'utf8'));
             packages = packageJson.workspaces.packages || packageJson.workspaces;
         }
 
